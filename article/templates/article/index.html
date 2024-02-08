@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+
+        <div id="slides" class="">
+            <h2 class="my-2">Recent Articles</h2>
+            <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
+                <div class="carousel-indicators">
+                  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                 {% for post in recent_articles %}
+                    <div class="carousel-item active">
+                        <a href="{% url "article:single_article" post.id %}">
+                            <img style="height:500px;" src="{{post.img.url}}" class="d-block w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                            <h5 class="bg-warning text-dark">{{post.title | truncatewords:5}}</h5>
+                            <p class="bg-dark text-white">{{post.content | truncatewords:8}}</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                 {% endfor %}
+                  </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+        </div>
+
+        <div class="m-5" id="all_articles">
+            <h2>All Articles</h2>
+        <div class='row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4'>
+            {% for article in page_obj %}
+            <div class='col'> 
+                <div class="card shadow" style="width: 18rem;">
+                    <img style="height:230px;" src="{{article.img.url}}" class="card-img-top img-fluid" alt="...">
+                    <div class="card-body">
+                    <h5 style="height: 45px;" class="card-title text-dark">{{article.title | truncatewords:5}}</h5>
+                    <p style="height: 80px;" class="card-text">{{article.content | truncatewords:15}}</p>
+                    <a href="{% url "article:single_article" article.id %}" class="float-end text-decoration-none">read more</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="pagination my-4 justify-content-center">
+            {% if page_obj.has_previous %}
+                <a class="mx-2 text-decoration-none fw-bold btn btn-outline-success" href="?page=1">First</a>
+                <a class="mx-2 text-decoration-none fw-bold btn btn-outline-success" href="?page={{page_obj.previous_page_number}}">Previous</a>
+            {% endif %}
+            <span class="mx-2 text-decoration-none fw-bold my-2 text-dark h5">
+                {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+            </span>
+            {% if page_obj.has_next %}
+                <a class="mx-2 text-decoration-none fw-bold btn btn-outline-success" href="?page={{page_obj.next_page_number}}">Next</a>
+                <a class="mx-2 text-decoration-none fw-bold btn btn-outline-success" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+            {% endif %}
+        </div>
+        </div>
+        
+    </div>
+{% endblock content %}

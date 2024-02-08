@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container pt-5">
+    <h2 class="mt-4" style="width:80%">{{article.title}}<h2>
+    <h5 class="m-2">
+        By <a class="text-decoration-none" href="{% url "author_profile" article.author.id %}">
+            {{article.author}}
+        </a> on {{article.date}}
+    </h5>
+    <img class="my-4" style="width:60%"src="{{article.img.url}}" alt="">
+    <p>{{article.content}}</p>
+    <div>
+        <h2>Comments</h2>
+        {% if user.username %}
+            <form class="mb-3" method='POST' action="" class="mb-3">
+                {% csrf_token %}
+                <textarea class="form-control" name="comment" id="" cols="100" rows="3"></textarea><br>
+                <input type="submit" value="Add Comment" class="btn btn-primary">
+            </form>
+        {% else %}
+            Please login to add a comment!
+        {% endif %}
+        
+        {% for comment in comments %}
+        <div class="card">
+            <div class="card-header">
+                <h5><a class="text-decoration-none" href="{% url "author_profile" comment.user.id  %}">{{comment.user}}</a></h5>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{comment.created_date|date:"M j, Y" }}</h5>
+              <p class="card-text">{{comment.text|linebreaks}}</p>
+              {% if user.is_staff or user == comment.user %}
+                <form method='POST' action="" > 
+                    {% csrf_token %}
+                    <input type="hidden" name="delete-comment" value="{{ comment.pk }}">
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-trash"></i> Delete</button>
+                </form>
+            {% endif %}
+            </div>
+          </div>
+            <hr>
+        {% empty %}
+            No comments yet! Be the first one to comment!
+        {% endfor %} 
+    </div>
+
+</div>
+
+{% endblock content %}
